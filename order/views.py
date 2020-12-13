@@ -1,5 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.forms import inlineformset_factory
+
 from .models import Product, Customer, Order
+from .forms import OrderForm
+
 
 # Create your views here.
 def home(request):
@@ -42,3 +46,75 @@ def customer(request,id):
 
 
     return render(request, 'customer.html',context)
+
+
+
+
+def createview(request, id):
+	OrderFormSet = inlineformset_factory(Customer, Order, fields=('product', 'status'), extra=10 )
+	cus = Customer.objects.get(id=id)
+	formset = OrderFormSet(queryset=Order.objects.none(),instance=cus)
+	#form = OrderForm(initial={'customer':customer})
+	if request.method == 'POST':
+		#print('Printing POST:', request.POST)
+		#form = OrderForm(request.POST)
+		formset = OrderFormSet(request.POST, instance=cus)
+		if formset.is_valid():
+			formset.save()
+			return redirect('/')
+
+	context = {'form':formset}
+	return render(request, 'create.html', context)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# def createview(request,id):
+#     OrderFormSet = inlineformset_factory(Customer, Order, fields=('product', 'status'), extra=10 )
+#     cus= Customer.objects.get(id=id)
+#     formset= OrderFormSet(instance=cus)
+
+#     formset= OrderForm(initial={'customer':cus})
+    
+
+#     if request.method=="POST":
+#         formset= OrderFormSet(request.POST, instance=cus)
+#         if formset.is_valid:
+#             formset.save()
+#             return redirect('/')
+        
+        
+#     context={'form':formset}
+#     return render(request, 'create.html', context)
+
+def updateorder(request, id):
+    order= Order.objects.get(id=id)
+    form= OrderForm(instance=order)
+    
+    if request.method=="POST":
+        form= OrderForm(request.POST, instance=order)
+        form.save()
+        return redirect('/')
+
+    context={'form':form}
+    return render(request, 'update.html', context)
+
+
+def deleteorder(request, id):
+    order= Order.objects.get(id=id)
+    if request.method=="POST":
+        order.delete()
+        return redirect('/')
+
+    context={'item':order}
+    return render(request, 'delete.html',context)

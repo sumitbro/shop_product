@@ -59,7 +59,8 @@
 				{% for c in cust %}
 
 				<tr>
-					<td><a href="/customer/{{c.id}}">View</a></td>
+					<td><a class="btn btn-sm btn-info" href="/customer/{{c.id}}">View</a></td>
+					<!-- <td><a  href="/customer/{{c.id}}">View</a></td> -->
 					<td>{{c.name}}</td>
 					<td>{{c.phone}}</td>
 				</tr>
@@ -72,7 +73,6 @@
         <h5>Last 5 Order</h5>
         <hr>
         <div class="card card-body">
-            <a class="btn btn-primary btn-sm btn-block" href="">Create Order</a>
             <table class="table table-sm">
                 <tr>
                     <th>Product</th>
@@ -87,8 +87,8 @@
 					<td>{{o.product}}</td>
 					<td>{{o.date_created}}</td>
 					<td>{{o.status}}</td>
-					<td><a class="btn btn-sm btn-info" href="">Update</a></td>
-					<td><a class="btn btn-sm btn-danger" href="">Delete</a></td>
+					<td><a class="btn btn-sm btn-info" href="/update/{{o.id}}">Update</a></td>
+					<td><a class="btn btn-sm btn-danger" href="/delete/{{o.id}}">Delete</a></td>
 
 				</tr>
 				{% endfor %}
