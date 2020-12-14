@@ -8,7 +8,15 @@
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" >
 <link rel='stylesheet' type="text/css" href="{% static 'style.css' %}">
+<style>
+  .hello-msg{
+    font-size: 18px;
+    color: #fff;
+    margin-right: 20px;
 
+
+  }
+</style>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
@@ -40,6 +48,10 @@
             </ul>
           </div>
         </div>
+
+
+        <span class="hello-msg">Hello,{{request.user}} </span>
+        <span class="hello-msg"><a href="/account/logout">LogOut</a></span>
       </nav>
     {% block content %}
 

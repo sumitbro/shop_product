@@ -1,11 +1,16 @@
 from django.shortcuts import render, redirect
 from django.forms import inlineformset_factory
 
+
 from .models import Product, Customer, Order
 from .forms import OrderForm
+from django.contrib.auth.decorators import login_required
+
 
 
 # Create your views here.
+# login_required(login_url="signin")
+@login_required(login_url="/account/signin" )
 def home(request):
 
     orders= Order.objects.all()
@@ -29,14 +34,14 @@ def home(request):
 
     return render(request,'dashboard.html', context)
 
-
+@login_required(login_url="/account/signin" )
 def product(request):
 
     pro= Product.objects.all()
 
     return render(request, 'product.html',{'pro':pro})
 
-
+@login_required(login_url="/account/signin" )
 def customer(request,id):
 
     cus= Customer.objects.get(id=id)
@@ -49,7 +54,7 @@ def customer(request,id):
 
 
 
-
+@login_required(login_url="/account/signin" )
 def createview(request, id):
 	OrderFormSet = inlineformset_factory(Customer, Order, fields=('product', 'status'), extra=10 )
 	cus = Customer.objects.get(id=id)
@@ -67,36 +72,7 @@ def createview(request, id):
 	return render(request, 'create.html', context)
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-# def createview(request,id):
-#     OrderFormSet = inlineformset_factory(Customer, Order, fields=('product', 'status'), extra=10 )
-#     cus= Customer.objects.get(id=id)
-#     formset= OrderFormSet(instance=cus)
-
-#     formset= OrderForm(initial={'customer':cus})
-    
-
-#     if request.method=="POST":
-#         formset= OrderFormSet(request.POST, instance=cus)
-#         if formset.is_valid:
-#             formset.save()
-#             return redirect('/')
-        
-        
-#     context={'form':formset}
-#     return render(request, 'create.html', context)
-
+@login_required(login_url="/account/signin" )
 def updateorder(request, id):
     order= Order.objects.get(id=id)
     form= OrderForm(instance=order)
@@ -109,7 +85,7 @@ def updateorder(request, id):
     context={'form':form}
     return render(request, 'update.html', context)
 
-
+@login_required(login_url="/account/signin" )
 def deleteorder(request, id):
     order= Order.objects.get(id=id)
     if request.method=="POST":
@@ -118,3 +94,7 @@ def deleteorder(request, id):
 
     context={'item':order}
     return render(request, 'delete.html',context)
+
+
+
+
