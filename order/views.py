@@ -5,12 +5,15 @@ from django.forms import inlineformset_factory
 from .models import Product, Customer, Order
 from .forms import OrderForm
 from django.contrib.auth.decorators import login_required
+from .filters import OrderFilter
+from .decorators import allowed_users,admin_only
 
 
 
 # Create your views here.
 # login_required(login_url="signin")
 @login_required(login_url="/account/signin" )
+@admin_only
 def home(request):
 
     orders= Order.objects.all()
@@ -35,6 +38,7 @@ def home(request):
     return render(request,'dashboard.html', context)
 
 @login_required(login_url="/account/signin" )
+@allowed_users(allowed_roles=['admin'])
 def product(request):
 
     pro= Product.objects.all()
@@ -42,12 +46,16 @@ def product(request):
     return render(request, 'product.html',{'pro':pro})
 
 @login_required(login_url="/account/signin" )
+@allowed_users(allowed_roles=['admin'])
 def customer(request,id):
 
     cus= Customer.objects.get(id=id)
     order= cus.order_set.all()
     total_order= order.count()
-    context= {'cus':cus,'order':order, 'total_order':total_order}
+    myFilter= OrderFilter(request.GET, queryset=order)
+    order= myFilter.qs
+
+    context= {'cus':cus,'order':order, 'total_order':total_order,'myFilter':myFilter}
 
 
     return render(request, 'customer.html',context)
@@ -55,6 +63,7 @@ def customer(request,id):
 
 
 @login_required(login_url="/account/signin" )
+@allowed_users(allowed_roles=['admin'])
 def createview(request, id):
 	OrderFormSet = inlineformset_factory(Customer, Order, fields=('product', 'status'), extra=10 )
 	cus = Customer.objects.get(id=id)
@@ -73,6 +82,7 @@ def createview(request, id):
 
 
 @login_required(login_url="/account/signin" )
+@allowed_users(allowed_roles=['admin'])
 def updateorder(request, id):
     order= Order.objects.get(id=id)
     form= OrderForm(instance=order)
@@ -86,6 +96,7 @@ def updateorder(request, id):
     return render(request, 'update.html', context)
 
 @login_required(login_url="/account/signin" )
+@allowed_users(allowed_roles=['admin'])
 def deleteorder(request, id):
     order= Order.objects.get(id=id)
     if request.method=="POST":
@@ -97,4 +108,12 @@ def deleteorder(request, id):
 
 
 
+@login_required(login_url="/account/signin" )
+@allowed_users(allowed_roles=['customer'])
+def userpage(request):
+    order= request.user.customer.order_set.all()
+    
 
+    context={'order':order}
+
+    return render(request, 'user.html', context)
