@@ -6,6 +6,7 @@ class Customer(models.Model):
     user= models.OneToOneField(User, null=True, on_delete=models.CASCADE)
     name= models.CharField(max_length=50, null=True)
     phone= models.CharField(max_length=50)
+    # img= models.ImageField(default="Screenshot_15.png", null=True, blank=True)
     email= models.EmailField()
     date_created= models.DateTimeField(auto_now_add=True, null=True)
 

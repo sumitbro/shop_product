@@ -4,6 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 from .forms import SignupForm
 from order.decorators import unauthenticated_user
 from django.contrib.auth.models import Group
+from order.models import Customer
 
 
 from django.contrib import messages
@@ -21,6 +22,7 @@ def signup(request):
                 user=form.save()
                 group= Group.objects.get(name='customer')
                 user.groups.add(group)
+                Customer.objects.create(user=user)
                 username= form.cleaned_data.get('username')
                 messages.success(request,'Account created for '+ username)
                 return redirect('/account/signin')

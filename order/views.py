@@ -3,7 +3,7 @@ from django.forms import inlineformset_factory
 
 
 from .models import Product, Customer, Order
-from .forms import OrderForm
+from .forms import OrderForm, CustomerForm
 from django.contrib.auth.decorators import login_required
 from .filters import OrderFilter
 from .decorators import allowed_users,admin_only
@@ -117,3 +117,21 @@ def userpage(request):
     context={'order':order}
 
     return render(request, 'user.html', context)
+
+
+
+
+# @login_required(login_url="/account/signin")
+# @allowed_users(allowed_roles=['customer'])
+# def account(request):
+# 	customer = request.user.customer
+# 	form = CustomerForm(instance=customer)
+
+# 	if request.method == 'POST':
+# 		form = CustomerForm(request.POST, request.FILES, instance=customer)
+# 		if form.is_valid():
+# 			form.save()
+
+
+# 	context = {'form':form}
+# 	return render(request, 'account.html', context)
